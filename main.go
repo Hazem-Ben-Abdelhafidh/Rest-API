@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"rest-api/controllers"
 	"rest-api/db"
+	_ "rest-api/docs"
 	"rest-api/models"
 	"rest-api/repositories"
 	"rest-api/services"
 )
 
+// @title	Posts REST API
 func main() {
 	db := db.InitDb()
 	err := db.AutoMigrate(&models.Post{})

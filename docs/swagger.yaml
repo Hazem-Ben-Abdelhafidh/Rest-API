@@ -1,0 +1,112 @@
+definitions:
+  controllers.ResponseBody:
+    properties:
+      data: {}
+      status:
+        type: string
+    type: object
+  models.PostPayload:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Posts REST API
+paths:
+  /:
+    get:
+      description: This endpoint is used to get all posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResponseBody'
+      summary: Get All Posts
+      tags:
+      - posts
+    post:
+      description: This endpoint is used to create a new post
+      parameters:
+      - description: create Post
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.PostPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controllers.ResponseBody'
+      summary: Create Post
+      tags:
+      - posts
+  /{id}:
+    delete:
+      description: This endpoint is used to delete a post by id
+      parameters:
+      - description: delete post by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResponseBody'
+      summary: Delete a post
+      tags:
+      - posts
+    get:
+      description: This endpoint is used to get one post by passing it's id
+      parameters:
+      - description: get post by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResponseBody'
+      summary: Get one Post
+      tags:
+      - posts
+    patch:
+      description: This endpoint is used to update an existing Post by it's id
+      parameters:
+      - description: updatePost Post
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/models.PostPayload'
+      - description: update post by id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ResponseBody'
+      summary: Update Post
+      tags:
+      - posts
+swagger: "2.0"

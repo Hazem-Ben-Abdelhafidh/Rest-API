@@ -5,10 +5,13 @@ import (
 	"io"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter(postController PostController) *gin.Engine {
 	router := gin.Default()
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/", postController.GetPosts)
 	router.POST("/", postController.CreatePost)
 	router.GET("/:id", postController.GetPost)
