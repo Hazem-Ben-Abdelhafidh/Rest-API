@@ -2,35 +2,21 @@ package controllers
 
 import (
 	"net/http"
+	"rest-api/interfaces"
 	"rest-api/models"
-	"rest-api/services"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type PostController struct {
-	postService services.PostService
+	postService interfaces.PostService
 }
 
-func NewPostController(ps services.PostService) PostController {
+func NewPostController(ps interfaces.PostService) PostController {
 	return PostController{
 		postService: ps,
 	}
-}
-
-func respondWithError(c *gin.Context, statusCode int, err error) {
-	c.JSON(statusCode, gin.H{
-		"status":  "error",
-		"message": err.Error(),
-	})
-}
-
-func respondWithJson(c *gin.Context, statusCode int, dataKey string, data any) {
-	c.JSON(statusCode, gin.H{
-		"status": "success",
-		dataKey:  data,
-	})
 }
 
 func (pc PostController) GetPosts(c *gin.Context) {
@@ -39,7 +25,7 @@ func (pc PostController) GetPosts(c *gin.Context) {
 		respondWithError(c, http.StatusInternalServerError, err)
 		return
 	}
-	respondWithJson(c, http.StatusOK, "posts", posts)
+	respondWithJson(c, http.StatusOK, posts)
 }
 
 func (pc PostController) GetPost(c *gin.Context) {
@@ -54,7 +40,7 @@ func (pc PostController) GetPost(c *gin.Context) {
 		respondWithError(c, http.StatusInternalServerError, err)
 		return
 	}
-	respondWithJson(c, http.StatusOK, "post", post)
+	respondWithJson(c, http.StatusOK, post)
 }
 
 func (pc PostController) CreatePost(c *gin.Context) {
@@ -68,7 +54,7 @@ func (pc PostController) CreatePost(c *gin.Context) {
 		respondWithError(c, http.StatusInternalServerError, err)
 		return
 	}
-	respondWithJson(c, http.StatusCreated, "post", post)
+	respondWithJson(c, http.StatusCreated, post)
 }
 
 func (pc PostController) DeletePost(c *gin.Context) {
@@ -80,9 +66,9 @@ func (pc PostController) DeletePost(c *gin.Context) {
 	}
 	err = pc.postService.DeletePost(idInt)
 	if err != nil {
-		respondWithError(c, http.StatusBadRequest, err)
+		respondWithError(c, http.StatusInternalServerError, err)
 	}
-	respondWithJson(c, http.StatusOK, "post", nil)
+	respondWithJson(c, http.StatusOK, nil)
 }
 
 func (pc PostController) UpdatePost(c *gin.Context) {
@@ -98,15 +84,10 @@ func (pc PostController) UpdatePost(c *gin.Context) {
 		respondWithError(c, http.StatusBadRequest, err)
 		return
 	}
-	postPayload := models.Post{
-		Id:          uint(idInt),
-		Title:       payload.Title,
-		Description: payload.Description,
-	}
-	post, err := pc.postService.UpdatePost(postPayload)
+	post, err := pc.postService.UpdatePost(payload, uint(idInt))
 	if err != nil {
 		respondWithError(c, http.StatusInternalServerError, err)
 		return
 	}
-	respondWithJson(c, http.StatusOK, "post", post)
+	respondWithJson(c, http.StatusOK, post)
 }

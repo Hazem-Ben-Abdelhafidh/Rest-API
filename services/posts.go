@@ -31,6 +31,11 @@ func (ps PostService) DeletePost(id int) error {
 	return ps.PostRepo.DeletePost(id)
 }
 
-func (ps PostService) UpdatePost(post models.Post) (models.Post, error) {
-	return ps.PostRepo.UpdatePost(post)
+func (ps PostService) UpdatePost(post models.PostPayload, postId uint) (models.Post, error) {
+	postToCreate := models.Post{
+		Id:          postId,
+		Title:       post.Title,
+		Description: post.Description,
+	}
+	return ps.PostRepo.UpdatePost(postToCreate)
 }
